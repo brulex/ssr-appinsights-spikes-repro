@@ -4,6 +4,24 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
+import {TestOptions, TestToken} from "./src/app/test-token";
+
+
+
+function tests(options: TestOptions) {
+  if (options.timer) {
+    new Promise((resolve) => {
+      const time = Number(options.timer);
+      setTimeout(resolve, time);
+
+      // const start = performance.now();
+      // while (performance.now() < start + time) {}
+      // resolve(null);
+      }
+    ).then(() => console.log('Promise timer resolved'));
+  }
+
+}
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -20,6 +38,12 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
+  server.get('/api/timer/:time', async (req, res) => {
+    await new Promise((resolve) => setTimeout(resolve, Number(req.params.time)));
+    console.log(`/api/timer/:time ${req.params.time} timer resolved`)
+    res.status(200).send();
+  });
+
   server.get('*.*', express.static(browserDistFolder, {
     maxAge: '1y'
   }));
@@ -34,7 +58,7 @@ export function app(): express.Express {
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: browserDistFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }, { provide: TestToken, useValue: tests }],
       })
       .then((html) => res.send(html))
       .catch((err) => next(err));

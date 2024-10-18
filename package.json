@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:angular-ssr-appinsights-spikes-repro": "node dist/angular-ssr-appinsights-spikes-repro/server/server.mjs"
+    "serve:ssr:angular-ssr-appinsights-spikes-repro": "tsx watch dist/angular-ssr-appinsights-spikes-repro/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +24,7 @@
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "tsx": "^4.19.1",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
